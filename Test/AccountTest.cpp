@@ -1,7 +1,6 @@
-
-#include "googletest-main/googletest/include/gtest.h"
 #include "../Transaction.h"
 #include "../Account.h"
+#include "googletest-main/googletest/include/gtest/gtest.h"
 TEST(AccountTest, Test_account_balance) {
     Account account;
     account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
