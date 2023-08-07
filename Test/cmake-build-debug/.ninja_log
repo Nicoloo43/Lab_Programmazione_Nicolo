@@ -1,0 +1,4 @@
+# ninja log v5
+1	742	7130995211995705	CMakeFiles/runAllTests.cpp.dir/runAllTests.cpp.obj	119b640c79cacb9d
+6	894	7130995213500921	CMakeFiles/runAllTests.cpp.dir/AccountFixture.cpp.obj	8ab2a766244adfae
+3	830	7130995881635628	CMakeFiles/runAllTests.cpp.dir/AccountTest.cpp.obj	ce52e106d0fbe49d
