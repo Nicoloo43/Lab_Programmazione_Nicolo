@@ -51,4 +51,17 @@ double Account::calculateBalance() const {
 void Account::addTransaction(const Transaction& transaction) {
     transactions.push_back(transaction);
 }
+
+void Account::printTransactions() const {
+    std::string type;
+    for (const Transaction& transaction : transactions) {
+        if(static_cast<int>(transaction.getType())==1){
+            std::cout << "Deposit :" << " " << transaction.getAmount() << "\n";
+        }else{
+            std::cout << "Withdraw :" << " " << transaction.getAmount() << "\n";
+        }
+
+    }
+}
+
 //

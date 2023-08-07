@@ -18,6 +18,7 @@ public:
 
     bool saveToFile(const std::string& filename) const ;
     bool loadFromFile(const std::string& filename);
+    void printTransactions() const;
 private:
     std::vector<Transaction> transactions;
 };
