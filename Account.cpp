@@ -8,7 +8,7 @@ bool Account::loadFromFile(const std::string& filename) {
         return false;
     }
 
-    transactions.clear(); // Rimuovi le transazioni esistenti
+    transactions.clear();
 
     int typeInt;
     double amount;
@@ -56,9 +56,9 @@ void Account::printTransactions() const {
     std::string type;
     for (const Transaction& transaction : transactions) {
         if(static_cast<int>(transaction.getType())==1){
-            std::cout << "Deposit :" << " " << transaction.getAmount() << "\n";
+            std::cout << "Deposit :" << " " << transaction.getAmount() << std::endl;
         }else{
-            std::cout << "Withdraw :" << " " << transaction.getAmount() << "\n";
+            std::cout << "Withdraw :" << " " << transaction.getAmount() << std::endl;
         }
 
     }
