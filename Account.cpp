@@ -1,3 +1,4 @@
+#include <list>
 #include "Account.h"
 
 //
@@ -63,5 +64,19 @@ void Account::printTransactions() const {
 
     }
 }
-
+void Account::deleteTransaction(const Transaction& transaction){
+    bool trovato=false;
+    int iter=0;
+    for(Transaction t: transactions){
+        if(t==transaction){
+            trovato=true;
+            transactions.erase(transactions.begin()+iter);
+            break;
+        }
+        iter++;
+    }
+    if(!trovato){
+        std::cerr << "Errore, impossibile rimuovere" << std::endl;
+    }
+}
 //
