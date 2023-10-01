@@ -13,10 +13,12 @@ bool Account::loadFromFile(const std::string& filename) {
 
     int typeInt;
     double amount;
-
-    while (file >> typeInt >> amount) {
+    std::string description;
+    std::string date;
+    while (file >> typeInt >> amount >> description >> date) {
         Transaction::Type type = static_cast<Transaction::Type>(typeInt);
-        Transaction transaction(type, amount);
+        Date newDate = Date::fromString(date); // Chiamata corretta alla funzione fromString
+        Transaction transaction(type, amount, description, newDate);
         transactions.push_back(transaction);
     }
 
@@ -26,40 +28,59 @@ bool Account::loadFromFile(const std::string& filename) {
 bool Account::saveToFile(const std::string& filename) const {
     std::ofstream file(filename);
     if (!file.is_open()) {
-        std::cout<<"Errore nel salvataggio su file."<<std::endl;
+        std::cout << "Errore nel salvataggio su file." << std::endl;
         return false;
     }
-
     for (const Transaction& transaction : transactions) {
-        file << static_cast<int>(transaction.getType()) << " " << transaction.getAmount() << "\n";
+
+        file << static_cast<int>(transaction.getType()) << " " << transaction.getAmount() <<" "<< transaction.getDescription() << " "<< transaction.getDate() << "\n";
     }
 
     file.close();
     return true;
 }
-double Account::calculateBalance() const {
-    double balance = 0.0;
-    for (const Transaction& transaction : transactions) {
-        if (transaction.getType() == Transaction::Type::DEPOSIT) {
-            balance += transaction.getAmount();
-        } else {
-            balance -= transaction.getAmount();
-        }
-    }
-    return balance;
-}
 
 void Account::addTransaction(const Transaction& transaction) {
     transactions.push_back(transaction);
+    if(static_cast<int>(transaction.getType())==1){
+        balance -= transaction.getAmount();
+    }else{
+        balance += transaction.getAmount();
+    }
 }
-
+void Account::modifyTransaction(const Transaction& transaction){
+    bool trovato=false;
+    int iter=0;
+    for(Transaction t: transactions){
+        if(t==transaction){
+            trovato=true;
+            if(static_cast<int>(t.getType())==1){
+                balance -= t.getAmount();
+            }else{
+                balance += t.getAmount();
+            }
+            transactions.erase(transactions.begin()+iter);
+            transactions.insert(transactions.begin()+iter,transaction);
+            if(static_cast<int>(transaction.getType())==1){
+                balance += t.getAmount();
+            }else{
+                balance -= t.getAmount();
+            }
+            break;
+        }
+        iter++;
+    }
+    if(!trovato){
+        std::cerr << "Errore, impossibile modificare" << std::endl;
+    }
+}
 void Account::printTransactions() const {
     std::string type;
     for (const Transaction& transaction : transactions) {
         if(static_cast<int>(transaction.getType())==1){
-            std::cout << "Deposit :" << " " << transaction.getAmount() << std::endl;
+            std::cout << "Deposit with an amount of :" << " " << transaction.getAmount() << std::endl << "Description :" << transaction.getDescription() << " " << transaction.getDate() << std::endl<< std::endl;
         }else{
-            std::cout << "Withdraw :" << " " << transaction.getAmount() << std::endl;
+            std::cout << "Withdraw with an amount of :" << " " << transaction.getAmount() << std::endl << "Description :" << transaction.getDescription() << " " << transaction.getDate() << std::endl<< std::endl;
         }
 
     }
@@ -70,6 +91,11 @@ void Account::deleteTransaction(const Transaction& transaction){
     for(Transaction t: transactions){
         if(t==transaction){
             trovato=true;
+            if(static_cast<int>(t.getType())==1){
+                balance -= t.getAmount();
+            }else{
+                balance += t.getAmount();
+            }
             transactions.erase(transactions.begin()+iter);
             break;
         }
@@ -78,5 +104,8 @@ void Account::deleteTransaction(const Transaction& transaction){
     if(!trovato){
         std::cerr << "Errore, impossibile rimuovere" << std::endl;
     }
+}
+double Account::getBalance() const {
+    return balance;
 }
 //

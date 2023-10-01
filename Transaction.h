@@ -19,7 +19,8 @@ public:
     Type getType() const;
     bool operator==(const Transaction& transaction);
     double getAmount() const;
-
+    std::string getDescription() const;
+    std::string getDate() const;
 private:
     Type type;
     double amount;//non negativo

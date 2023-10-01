@@ -5,7 +5,7 @@
 #ifndef EL_LAB_PROG_DATE_H
 #define EL_LAB_PROG_DATE_H
 #include <iostream>
-
+#include <string>
 class Date {
 private: int day;
     int month;
@@ -66,6 +66,30 @@ public:
 
         // Date is valid
         return true;
+    }
+    static Date fromString(std::string date) {
+        if (date.length() != 10 || date[2] != '/' || date[5] != '/') {
+            throw std::invalid_argument("Formato data non valido");
+        }
+
+        int day = std::stoi(date.substr(0, 2));
+        int month = std::stoi(date.substr(3, 2));
+        int year = std::stoi(date.substr(6, 4));
+
+        if (day < 1 || day > 31 || month < 1 || month > 12 || year < 0) {
+            throw std::invalid_argument("Data non valida");
+        }
+
+        Date newDate(day, month, year);
+        return newDate;
+    }
+
+    bool operator==(const Date& date){
+        if(this->day==date.day && this->month==date.month && this->year==date.year){
+            return true;
+        }else{
+            return false;
+        }
     }
 };
 #endif //EL_LAB_PROG_DATE_H

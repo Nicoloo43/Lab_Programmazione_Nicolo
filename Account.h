@@ -16,11 +16,12 @@ public:
     void deleteTransaction(const Transaction& transaction);
     void modifyTransaction(const Transaction& transaction);//eliminare e modificare transazioni
     //modificare calculateBalance così che rimanga aggiornato
-    double calculateBalance() const ;
     bool saveToFile(const std::string& filename) const ;
     bool loadFromFile(const std::string& filename);
     void printTransactions() const;
+    double getBalance() const;
 private:
     std::vector<Transaction> transactions;
+    double balance=0;
 };
 #endif //UNTITLED3_ACCOUNT_H
