@@ -15,9 +15,16 @@ bool Account::loadFromFile(const std::string& filename) {
     double amount;
     std::string description;
     std::string date;
-    while (file >> typeInt >> amount >> description >> date) {
+    int iter=0;
+    while (!file.eof()) {
+        if (iter==0){
+            file >> balance;
+            iter++;
+            continue;
+        }
+        file >> typeInt >> amount >> description >> date;
         Transaction::Type type = static_cast<Transaction::Type>(typeInt);
-        Date newDate = Date::fromString(date); // Chiamata corretta alla funzione fromString
+        Date newDate = Date::fromString(date);
         Transaction transaction(type, amount, description, newDate);
         transactions.push_back(transaction);
     }
@@ -31,6 +38,7 @@ bool Account::saveToFile(const std::string& filename) const {
         std::cout << "Errore nel salvataggio su file." << std::endl;
         return false;
     }
+    file << balance << "\n";
     for (const Transaction& transaction : transactions) {
 
         file << static_cast<int>(transaction.getType()) << " " << transaction.getAmount() <<" "<< transaction.getDescription() << " "<< transaction.getDate() << "\n";
