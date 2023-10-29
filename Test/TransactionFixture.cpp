@@ -6,29 +6,24 @@
 class TransactionFixture : public ::testing::Test {
 protected:
     void SetUp() override {
-        account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-        account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-        account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
     }
     Account account;
-
 };
-TEST_F(TransactionFixture, Test_transaction_type) {
-    Transaction transaction(Transaction::Type::DEPOSIT, 1000.0);
-    ASSERT_EQ(transaction.getType(), Transaction::Type::DEPOSIT);
+TEST_F(TransactionFixture, TestAddTransaction) {
+    Transaction transaction(Transaction::Type::WITHDRAW, 300.0, "withdraw1", Date(2, 1, 2020));
+    account.addTransaction(transaction);
+    ASSERT_EQ(account.getBalance(), -300.0);
 }
-TEST_F(TransactionFixture, Test_transaction_amount) {
-    Transaction transaction(Transaction::Type::DEPOSIT, 1000.0);
-    ASSERT_EQ(transaction.getAmount(), 1000.0);
+TEST_F(TransactionFixture, TestDeleteTransaction) {
+    Transaction transaction(Transaction::Type::WITHDRAW, 300.0, "withdraw1", Date(2, 1, 2020));
+    account.addTransaction(transaction);
+    account.deleteTransaction(transaction);
+    ASSERT_EQ(account.getBalance(), 0.0);
 }
-TEST_F(TransactionFixture, Test_account_balance) {
-    double balance = account.calculateBalance();
-    ASSERT_EQ(balance, 1300.0);
+TEST_F(TransactionFixture, TestModifyTransaction) {
+    Transaction oldtransaction(Transaction::Type::WITHDRAW, 300.0, "withdraw1", Date(2, 1, 2020));
+    account.addTransaction(oldtransaction);
+    Transaction newtransaction = Transaction(Transaction::Type::DEPOSIT, 1000.0, "deposit3", Date(1, 1, 2020));
+    account.modifyTransaction(oldtransaction, newtransaction);
+    ASSERT_EQ(account.getBalance(), 1000.0);
 }
-TEST_F(TransactionFixture, Test_account_save) {
-    ASSERT_TRUE(account.saveToFile("transactions.txt"));
-}
-TEST_F(TransactionFixture, Test_account_load) {
-    ASSERT_TRUE(account.loadFromFile("transactions.txt"));
-}
-//

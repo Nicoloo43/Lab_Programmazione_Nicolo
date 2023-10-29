@@ -14,11 +14,12 @@ class Account {
 public:
     void addTransaction(const Transaction& transaction) ;
     void deleteTransaction(const Transaction& transaction);
-    void modifyTransaction(const Transaction& transaction);
+    void modifyTransaction(const Transaction& origT, const Transaction& newT);
     bool saveToFile(const std::string& filename) const ;
     bool loadFromFile(const std::string& filename);
     void printTransactions() const;
     double getBalance() const;
+    std::vector<Transaction> getTransaction() const;
 private:
     std::vector<Transaction> transactions;
     double balance=0;

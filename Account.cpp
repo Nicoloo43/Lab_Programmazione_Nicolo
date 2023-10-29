@@ -50,33 +50,34 @@ bool Account::saveToFile(const std::string& filename) const {
 
 void Account::addTransaction(const Transaction& transaction) {
     transactions.push_back(transaction);
-    if(static_cast<int>(transaction.getType())==1){
-        balance -= transaction.getAmount();
-    }else{
+    if(static_cast<int>(transaction.getType())==0){
         balance += transaction.getAmount();
+    }else{
+        balance -= transaction.getAmount();
     }
 }
-void Account::modifyTransaction(const Transaction& transaction){
+void Account:: modifyTransaction(const Transaction& origT, const Transaction& newT){
     bool trovato=false;
     int iter=0;
     for(Transaction t: transactions){
-        if(t==transaction){
+        if(t==origT){
             trovato=true;
-            if(static_cast<int>(t.getType())==1){
+            if(static_cast<int>(t.getType())==0){
                 balance -= t.getAmount();
             }else{
                 balance += t.getAmount();
             }
             transactions.erase(transactions.begin()+iter);
-            transactions.insert(transactions.begin()+iter,transaction);
-            if(static_cast<int>(transaction.getType())==1){
-                balance += t.getAmount();
+            transactions.insert(transactions.begin()+iter,newT);
+            if(static_cast<int>(newT.getType())==0){
+                balance += newT.getAmount();
             }else{
-                balance -= t.getAmount();
+                balance -= newT.getAmount();
             }
             break;
+        }else{
+            iter++;
         }
-        iter++;
     }
     if(!trovato){
         std::cerr << "Errore, impossibile modificare" << std::endl;
@@ -85,7 +86,7 @@ void Account::modifyTransaction(const Transaction& transaction){
 void Account::printTransactions() const {
     std::string type;
     for (const Transaction& transaction : transactions) {
-        if(static_cast<int>(transaction.getType())==1){
+        if(static_cast<int>(transaction.getType())==0){
             std::cout << "Deposit with an amount of :" << " " << transaction.getAmount() << std::endl << "Description :" << transaction.getDescription() << " " << transaction.getDate() << std::endl<< std::endl;
         }else{
             std::cout << "Withdraw with an amount of :" << " " << transaction.getAmount() << std::endl << "Description :" << transaction.getDescription() << " " << transaction.getDate() << std::endl<< std::endl;
@@ -99,7 +100,7 @@ void Account::deleteTransaction(const Transaction& transaction){
     for(Transaction t: transactions){
         if(t==transaction){
             trovato=true;
-            if(static_cast<int>(t.getType())==1){
+            if(static_cast<int>(t.getType())==0){
                 balance -= t.getAmount();
             }else{
                 balance += t.getAmount();
@@ -115,5 +116,8 @@ void Account::deleteTransaction(const Transaction& transaction){
 }
 double Account::getBalance() const {
     return balance;
+}
+std::vector<Transaction> Account::getTransaction() const {
+    return transactions;
 }
 //

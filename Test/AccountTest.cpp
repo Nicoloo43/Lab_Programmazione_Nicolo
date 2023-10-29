@@ -1,57 +1,55 @@
 #include "../Transaction.h"
 #include "../Account.h"
 #include <gtest/gtest.h>
-TEST(AccountTest, Test_account_balance) {
-    Account account;
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
-    double balance = account.calculateBalance();
-    ASSERT_EQ(balance, 1300.0);
-}
-TEST(AccountTest, Test_account_save) {
-    Account account;
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
-    ASSERT_TRUE(account.saveToFile("transactions.txt"));
-}
-TEST(AccountTest, Test_account_load) {
-    Account account;
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
-    ASSERT_TRUE(account.loadFromFile("transactions.txt"));
-}
-TEST(AccountTest, Test_account_save_load) {
-    Account account;
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
-    ASSERT_TRUE(account.saveToFile("transactions.txt"));
-    ASSERT_TRUE(account.loadFromFile("transactions.txt"));
-}
-TEST(AccountTest, Test_account_balance_after_save_load) {
-    Account account;
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
-    ASSERT_TRUE(account.saveToFile("transactions.txt"));
-    ASSERT_TRUE(account.loadFromFile("transactions.txt"));
-    double balance = account.calculateBalance();
-    ASSERT_EQ(balance, 1300.0);
-}
-TEST(AccountTest, Test_account_balance_after_save_load_with_new_transaction) {
-    Account account;
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    account.addTransaction(Transaction(Transaction::Type::WITHDRAW, 200.0));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 500.0));
-    ASSERT_TRUE(account.saveToFile("transactions.txt"));
-    account.addTransaction(Transaction(Transaction::Type::DEPOSIT, 1000.0));
-    ASSERT_TRUE(account.saveToFile("transactions.txt"));
-    ASSERT_TRUE(account.loadFromFile("transactions.txt"));
-    double balance = account.calculateBalance();
-    ASSERT_EQ(balance, 2300.0);
-}
 
-//
+TEST(Account, TestAddTransaction) {
+    Transaction transaction(Transaction::Type::DEPOSIT, 1000.0, "deposit1", Date(1, 1, 2020));
+    Account account;
+    account.addTransaction(transaction);
+    for(Transaction T : account.getTransaction()){
+        if(T==transaction){
+            ASSERT_TRUE(true);
+        }
+    }
+}
+TEST(Account, TestDeleteTransaction) {
+    Transaction transaction(Transaction::Type::DEPOSIT, 1000.0, "deposit1", Date(1, 1, 2020));
+    Account account;
+    account.addTransaction(transaction);
+    account.deleteTransaction(transaction);
+    bool equal = false;
+    for(Transaction T : account.getTransaction()){
+        if(T==transaction){
+            equal=true;
+        }
+    }
+    ASSERT_FALSE(equal);
+}
+TEST(Account, TestModifyTransaction) {
+    Transaction oldTransaction(Transaction::Type::DEPOSIT, 1000.0, "deposit1", Date(1, 1, 2020));
+    Account account;
+    account.addTransaction(oldTransaction);
+    Transaction newTransaction = Transaction(Transaction::Type::DEPOSIT, 1000.0, "deposit3", Date(1, 1, 2020));
+    account.modifyTransaction(oldTransaction, newTransaction);
+    bool equal = false;
+    for(Transaction T : account.getTransaction()){
+        if(T==newTransaction){
+            equal=true;
+        }
+    }
+    ASSERT_TRUE(equal);
+}
+TEST(Account, TestSaveToFile) {
+    Transaction transaction(Transaction::Type::DEPOSIT, 1000.0, "deposit1", Date(1, 1, 2020));
+    Account account;
+    account.addTransaction(transaction);
+    account.saveToFile("transactions.txt");
+    account.loadFromFile("transactions.txt");
+    bool equal = false;
+    for(Transaction T : account.getTransaction()){
+        if(T==transaction){
+            equal=true;
+        }
+    }
+    ASSERT_TRUE(equal);
+}
